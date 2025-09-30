@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: rabbitmq
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    template:
+      exchange: pengembalian.exchange
+    listener:
+      simple:
+        default-requeue-rejected: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: asyrafilauliarasyid@gmail.com
+    password: ojnicvjmsoetrsga
+    properties:
+      mail: 
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  rabbitmq:
+    queue: pengembalian.queue
+    exchange: pengembalian.exchange
+    routing-key: pengembalian.routing.key
+
+logging:
+  level: 
+    com.asyrafil.rabbitmq: DEBUG
