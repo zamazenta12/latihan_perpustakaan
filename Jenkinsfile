@@ -20,7 +20,7 @@ pipeline {
                     steps {
                         dir('eureka_server') {
                             echo 'Building Eureka Server...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -29,7 +29,7 @@ pipeline {
                     steps {
                         dir('api_gateway') {
                             echo 'Building API Gateway...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -38,7 +38,7 @@ pipeline {
                     steps {
                         dir('anggota') {
                             echo 'Building Anggota Service...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -47,7 +47,7 @@ pipeline {
                     steps {
                         dir('buku') {
                             echo 'Building Buku Service...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -56,7 +56,7 @@ pipeline {
                     steps {
                         dir('peminjaman') {
                             echo 'Building Peminjaman Service...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -65,7 +65,7 @@ pipeline {
                     steps {
                         dir('pengembalian') {
                             echo 'Building Pengembalian Service...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -74,7 +74,7 @@ pipeline {
                     steps {
                         dir('email') {
                             echo 'Building Email Service...'
-                            bat 'mvn clean package -DskipTests'
+                            sh 'mvn clean package -DskipTests'
                         }
                     }
                 }
@@ -87,7 +87,7 @@ pipeline {
                     steps {
                         dir('eureka_server') {
                             echo 'Testing Eureka Server...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -96,7 +96,7 @@ pipeline {
                     steps {
                         dir('api_gateway') {
                             echo 'Testing API Gateway...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -154,7 +154,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for Eureka Server...'
-                            bat 'docker build -t eureka-server:latest ./eureka_server'
+                            sh 'docker build -t eureka-server:latest ./eureka_server'
                         }
                     }
                 }
@@ -163,7 +163,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for API Gateway...'
-                            bat 'docker build -t api-gateway:latest ./api_gateway'
+                            sh 'docker build -t api-gateway:latest ./api_gateway'
                         }
                     }
                 }
@@ -172,7 +172,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for Anggota Service...'
-                            bat 'docker build -t anggota-service:latest ./anggota'
+                            sh 'docker build -t anggota-service:latest ./anggota'
                         }
                     }
                 }
@@ -181,7 +181,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for Buku Service...'
-                            bat 'docker build -t buku-service:latest ./buku'
+                            sh 'docker build -t buku-service:latest ./buku'
                         }
                     }
                 }
@@ -190,7 +190,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for Peminjaman Service...'
-                            bat 'docker build -t peminjaman-service:latest ./peminjaman'
+                            sh 'docker build -t peminjaman-service:latest ./peminjaman'
                         }
                     }
                 }
@@ -199,7 +199,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for Pengembalian Service...'
-                            bat 'docker build -t pengembalian-service:latest ./pengembalian'
+                            sh 'docker build -t pengembalian-service:latest ./pengembalian'
                         }
                     }
                 }
@@ -208,7 +208,7 @@ pipeline {
                     steps {
                         script {
                             echo 'Building Docker image for Email Service...'
-                            bat 'docker build -t email-service:latest ./email'
+                            sh 'docker build -t email-service:latest ./email'
                         }
                     }
                 }
@@ -218,7 +218,7 @@ pipeline {
         stage('Verify Images') {
             steps {
                 echo 'Verifying Docker images...'
-                bat 'docker images | findstr "eureka-server api-gateway anggota-service buku-service peminjaman-service pengembalian-service email-service"'
+                sh 'docker images | grep "eureka-server\\|api-gateway\\|anggota-service\\|buku-service\\|peminjaman-service\\|pengembalian-service\\|email-service"'
             }
         }
     }

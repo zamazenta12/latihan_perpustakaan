@@ -13,7 +13,7 @@ pipeline {
             steps {
                 dir('buku') {
                     echo 'Building Buku Service...'
-                    bat 'mvn clean package -DskipTests'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 dir('buku') {
                     echo 'Running tests...'
-                    bat 'mvn test'
+                    sh 'mvn test'
                 }
             }
         }
@@ -31,8 +31,8 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    bat 'docker build -t buku-service:${BUILD_NUMBER} ./buku'
-                    bat 'docker tag buku-service:${BUILD_NUMBER} buku-service:latest'
+                    sh 'docker build -t buku-service:${BUILD_NUMBER} ./buku'
+                    sh 'docker tag buku-service:${BUILD_NUMBER} buku-service:latest'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
         stage('Verify Image') {
             steps {
                 echo 'Verifying Docker image...'
-                bat 'docker images | findstr buku-service'
+                sh 'docker images | grep buku-service'
             }
         }
     }

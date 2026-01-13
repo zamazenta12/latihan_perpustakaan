@@ -13,7 +13,7 @@ pipeline {
             steps {
                 dir('api_gateway') {
                     echo 'Building API Gateway...'
-                    bat 'mvn clean package -DskipTests'
+                    sh 'mvn clean package -DskipTests'
                 }
             }
         }
@@ -22,7 +22,7 @@ pipeline {
             steps {
                 dir('api_gateway') {
                     echo 'Running tests...'
-                    bat 'mvn test'
+                    sh 'mvn test'
                 }
             }
         }
@@ -31,8 +31,8 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker image...'
-                    bat 'docker build -t api-gateway:${BUILD_NUMBER} ./api_gateway'
-                    bat 'docker tag api-gateway:${BUILD_NUMBER} api-gateway:latest'
+                    sh 'docker build -t api-gateway:${BUILD_NUMBER} ./api_gateway'
+                    sh 'docker tag api-gateway:${BUILD_NUMBER} api-gateway:latest'
                 }
             }
         }
@@ -40,7 +40,7 @@ pipeline {
         stage('Verify Image') {
             steps {
                 echo 'Verifying Docker image...'
-                bat 'docker images | findstr api-gateway'
+                sh 'docker images | grep api-gateway'
             }
         }
     }
