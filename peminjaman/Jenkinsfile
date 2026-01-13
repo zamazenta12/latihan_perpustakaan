@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('peminjaman') {
+                    echo 'Building Peminjaman Service...'
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('peminjaman') {
+                    echo 'Running tests...'
+                    bat 'mvn test'
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    bat 'docker build -t peminjaman-service:${BUILD_NUMBER} ./peminjaman'
+                    bat 'docker tag peminjaman-service:${BUILD_NUMBER} peminjaman-service:latest'
+                }
+            }
+        }
+        
+        stage('Verify Image') {
+            steps {
+                echo 'Verifying Docker image...'
+                bat 'docker images | findstr peminjaman-service'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo '✅ Peminjaman Service pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Peminjaman Service pipeline failed!'
+        }
+    }
+}

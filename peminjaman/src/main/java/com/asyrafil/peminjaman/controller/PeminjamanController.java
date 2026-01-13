@@ -11,41 +11,61 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.asyrafil.peminjaman.cqrs.commands.CreatePeminjamanCommand;
+import com.asyrafil.peminjaman.cqrs.commands.DeletePeminjamanCommand;
+import com.asyrafil.peminjaman.cqrs.dispatcher.CommandDispatcher;
+import com.asyrafil.peminjaman.cqrs.dispatcher.QueryDispatcher;
+import com.asyrafil.peminjaman.cqrs.queries.GetAllPeminjamanQuery;
+import com.asyrafil.peminjaman.cqrs.queries.GetPeminjamanByIdQuery;
+import com.asyrafil.peminjaman.cqrs.queries.GetPeminjamanWithDetailsQuery;
+import com.asyrafil.peminjaman.dto.PeminjamanRequest;
 import com.asyrafil.peminjaman.model.Peminjaman;
 import com.asyrafil.peminjaman.vo.ResponseTemplate;
-import com.asyrafil.peminjaman.service.PeminjamanService;
 
 @RestController
 @RequestMapping("/api/peminjaman")
 public class PeminjamanController {
+
     @Autowired
-    private PeminjamanService peminjamanService;
+    private CommandDispatcher commandDispatcher;
+
+    @Autowired
+    private QueryDispatcher queryDispatcher;
 
     @GetMapping
     public List<Peminjaman> getAllPeminjamans() {
-        return peminjamanService.getAllPeminjamans();
+        return queryDispatcher.send(new GetAllPeminjamanQuery());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Peminjaman> getPeminjamanById(@PathVariable Long id) {
-        Peminjaman peminjaman = peminjamanService.getPeminjamanById(id);
+        Peminjaman peminjaman = queryDispatcher.send(new GetPeminjamanByIdQuery(id));
         return peminjaman != null ? ResponseEntity.ok(peminjaman) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
-    public Peminjaman createPeminjaman(@RequestBody Peminjaman peminjaman) {
-        return peminjamanService.createPeminjaman(peminjaman);
+    public Peminjaman createPeminjaman(@RequestBody PeminjamanRequest request) {
+        CreatePeminjamanCommand command = new CreatePeminjamanCommand();
+        command.setAnggota_id(request.getAnggota_id());
+        command.setBuku_id(request.getBuku_id());
+        command.setTanggal_pinjam(request.getTanggal_pinjam());
+        command.setTanggal_kembali(request.getTanggal_kembali());
+        command.setEmail(request.getEmail());
+        command.setNamaBuku(request.getNamaBuku());
+
+        return commandDispatcher.send(command);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletePeminjaman(@PathVariable Long id) {
-        peminjamanService.deletePeminjaman(id);
+        commandDispatcher.send(new DeletePeminjamanCommand(id));
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping( path = "/buku/{id}")
+    @GetMapping(path = "/buku/{id}")
     public List<ResponseTemplate> getPeminjamanWithBukuId(@PathVariable("id") Long id) {
-        return peminjamanService.getPeminjamanWithBukuById(id);
+        return queryDispatcher.send(new GetPeminjamanWithDetailsQuery(id));
     }
 
 }

@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('email') {
+                    echo 'Building Email Service...'
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('email') {
+                    echo 'Running tests...'
+                    bat 'mvn test'
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    bat 'docker build -t email-service:${BUILD_NUMBER} ./email'
+                    bat 'docker tag email-service:${BUILD_NUMBER} email-service:latest'
+                }
+            }
+        }
+        
+        stage('Verify Image') {
+            steps {
+                echo 'Verifying Docker image...'
+                bat 'docker images | findstr email-service'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo '✅ Email Service pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Email Service pipeline failed!'
+        }
+    }
+}

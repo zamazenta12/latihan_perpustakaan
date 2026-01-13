@@ -15,9 +15,7 @@ public class Pengembalian {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private long peminjaman_id;
-    // private long anggota_id;
-    // private long buku_id;
     private Date tanggal_dikembalikan;
     private Boolean terlambat;
     private Long denda;
-}
+}   

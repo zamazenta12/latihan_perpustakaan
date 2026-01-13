@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('anggota') {
+                    echo 'Building Anggota Service...'
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('anggota') {
+                    echo 'Running tests...'
+                    bat 'mvn test'
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    bat 'docker build -t anggota-service:${BUILD_NUMBER} ./anggota'
+                    bat 'docker tag anggota-service:${BUILD_NUMBER} anggota-service:latest'
+                }
+            }
+        }
+        
+        stage('Verify Image') {
+            steps {
+                echo 'Verifying Docker image...'
+                bat 'docker images | findstr anggota-service'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo '✅ Anggota Service pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Anggota Service pipeline failed!'
+        }
+    }
+}

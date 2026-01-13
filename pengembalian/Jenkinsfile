@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out source code...'
+                checkout scm
+            }
+        }
+        
+        stage('Build') {
+            steps {
+                dir('pengembalian') {
+                    echo 'Building Pengembalian Service...'
+                    bat 'mvn clean package -DskipTests'
+                }
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                dir('pengembalian') {
+                    echo 'Running tests...'
+                    bat 'mvn test'
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    echo 'Building Docker image...'
+                    bat 'docker build -t pengembalian-service:${BUILD_NUMBER} ./pengembalian'
+                    bat 'docker tag pengembalian-service:${BUILD_NUMBER} pengembalian-service:latest'
+                }
+            }
+        }
+        
+        stage('Verify Image') {
+            steps {
+                echo 'Verifying Docker image...'
+                bat 'docker images | findstr pengembalian-service'
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo '✅ Pengembalian Service pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pengembalian Service pipeline failed!'
+        }
+    }
+}
