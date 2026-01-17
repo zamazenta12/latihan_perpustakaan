@@ -110,7 +110,7 @@ pipeline {
                     steps {
                         dir('anggota') {
                             echo 'Testing Anggota Service...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -119,7 +119,7 @@ pipeline {
                     steps {
                         dir('buku') {
                             echo 'Testing Buku Service...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -128,7 +128,7 @@ pipeline {
                     steps {
                         dir('peminjaman') {
                             echo 'Testing Peminjaman Service...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -137,7 +137,7 @@ pipeline {
                     steps {
                         dir('pengembalian') {
                             echo 'Testing Pengembalian Service...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }
@@ -146,7 +146,7 @@ pipeline {
                     steps {
                         dir('email') {
                             echo 'Testing Email Service...'
-                            bat 'mvn test'
+                            sh 'mvn test'
                         }
                     }
                 }

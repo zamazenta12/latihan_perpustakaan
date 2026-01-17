@@ -6,7 +6,7 @@ Panduan lengkap untuk setup dan konfigurasi Jenkins CI/CD pada proyek Library Ma
 
 - Docker dan Docker Compose terinstall
 - Maven 3.9+
-- JDK 17
+- JDK 21
 - Git
 
 ## Quick Start
@@ -54,9 +54,9 @@ Jenkins akan tersedia di: `http://localhost:8080`
 #### JDK Configuration
 1. Manage Jenkins → Global Tool Configuration
 2. JDK installations → Add JDK
-   - Name: `JDK 17`
+   - Name: `JDK 21`
    - Install automatically: ✓
-   - Version: `17`
+   - Version: `21`
 
 #### Docker Configuration
 Docker sudah tersedia karena menggunakan Docker-in-Docker (DinD).
@@ -225,27 +225,15 @@ docker images | findstr "days ago" | awk '{print $3}' | xargs docker rmi
 
 ```powershell
 # Backup Jenkins home
-docker run --rm --volumes-from jenkins -v ${PWD}:/backup alpine tar czf /backup/jenkins-backup.tar.gz /var/jenkins_home
-```
 
-### Update Jenkins
-
-```powershell
 # Pull latest image
-docker pull jenkins/jenkins:lts-jdk17
+docker pull jenkins/jenkins:lts
 
 # Recreate container
 docker-compose -f docker-compose-jenkins.yml up -d --force-recreate jenkins
-```
-
-## Integration with ELK Stack
-
-Jenkins sudah terhubung ke network ELK. Untuk monitoring logs:
 
 1. Start ELK stack:
-   ```powershell
    docker-compose -f docker-compose-elk.yml up -d
-   ```
 
 2. Access Kibana: `http://localhost:5601`
 
