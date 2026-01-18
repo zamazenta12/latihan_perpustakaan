@@ -53,7 +53,7 @@ Agar pipeline bisa berjalan, konfigurasi Maven dan JDK secara manual:
 1. Pergi ke **Dahboard** > **Manage Jenkins** > **Tools**.
 2. **JDK Installations**:
    - Klik **Add JDK**.
-   - Name: `JDK 17` (**Harus sama persis**).
+   - Name: `JDK 21` (**Harus sama persis**).
    - **Uncheck** "Install automatically".
    - JAVA_HOME: `/opt/java/openjdk`
 3. **Maven Installations**:
