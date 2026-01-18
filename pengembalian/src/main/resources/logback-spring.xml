@@ -7,7 +7,7 @@
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>${logstashHost}:5000</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"service":"peminjaman-service"}</customFields>
+            <customFields>{"service":"pengembalian-service"}</customFields>
         </encoder>
     </appender>
 
