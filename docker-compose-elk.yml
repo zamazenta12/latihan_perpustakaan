@@ -52,6 +52,7 @@ services:
 
 networks:
   elk:
+    name: latihan_perpustakaan_elk
     driver: bridge
 
 volumes:

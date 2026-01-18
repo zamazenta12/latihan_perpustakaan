@@ -136,4 +136,5 @@ services:
 
 networks:
   elk:
-    external: true
+    name: latihan_perpustakaan_elk
+    driver: bridge
