@@ -1,108 +1,128 @@
-# Latihan Perpustakaan - Microservices CI/CD & Monitoring
+# 📚 Latihan Perpustakaan - Microservices CI/CD & Monitoring
 
-Proyek ini adalah sistem manajemen perpustakaan berbasis Microservices yang dilengkapi dengan infrastruktur CI/CD menggunakan **Jenkins** dan monitoring menggunakan **ELK Stack** (Elasticsearch, Logstash, Kibana).
-
-## 🚀 Infrastruktur
-
-Proyek ini menggunakan Docker Compose untuk menjalankan infrastruktur pendukung.
-
-### 1. ELK Stack (Monitoring)
-Digunakan untuk sentralisasi log dari semua microservices.
-
-**Cara Menjalankan:**
-```bash
-docker-compose -f docker-compose-elk.yml up -d
-```
-
-**Akses Layanan:**
-- **Kibana (Dashboard Log):** [http://localhost:5601](http://localhost:5601)
-- **Elasticsearch:** [http://localhost:9200](http://localhost:9200)
-- **Logstash:** Port 5000 (TCP/UDP)
+Proyek ini adalah sistem manajemen perpustakaan modern berbasis **Microservices Architecture**. Dibangun menggunakan **Java Spring Boot**, proyek ini mendemonstrasikan praktik terbaik *software engineering* modern termasuk **CI/CD Automation**, **Centralized Logging (ELK)**, dan **Real-time Monitoring**.
 
 ---
 
-### 2. Jenkins (CI/CD)
-Digunakan untuk otomatisasi build, test, dan pembuatan Docker image.
+## 🏗️ Arsitektur & Teknologi
 
-**Cara Menjalankan:**
-```bash
-docker-compose -f docker-compose-jenkins.yml up -d
-```
-
-**Akses Layanan:**
-- **Jenkins UI:** [http://localhost:8080](http://localhost:8080)
-
-#### 📝 Panduan Konfigurasi Awal Jenkins
-
-Setelah Jenkins berjalan, ikuti langkah-langkah berikut untuk mengkonfigurasinya:
-
-**Langkah 1: Ambil Password Admin Awal**
-Jalankan perintah ini di terminal untuk mendapatkan password login pertama kali:
-```bash
-docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
-```
-Copy password yang muncul dan masukkan ke halaman login Jenkins.
-
-**Langkah 2: Install Plugins**
-1. Pilih **"Install suggested plugins"**.
-2. Tunggu hingga proses instalasi selesai.
-
-**Langkah 3: Konfigurasi Tools (Wajib)**
-Agar pipeline bisa berjalan, konfigurasi Maven dan JDK secara manual:
-
-1. Pergi ke **Dahboard** > **Manage Jenkins** > **Tools**.
-2. **JDK Installations**:
-   - Klik **Add JDK**.
-   - Name: `JDK 21` (**Harus sama persis**).
-   - **Uncheck** "Install automatically".
-   - JAVA_HOME: `/opt/java/openjdk`
-3. **Maven Installations**:
-   - Klik **Add Maven**.
-   - Name: `Maven 3.9` (**Harus sama persis**).
-   - **Check** "Install automatically".
-   - Pilih versi **3.9.6** (atau terbaru) dari list "Install from Apache".
-4. Klik **Save**.
-
-**Langkah 4: Buat Pipeline Job**
-1. Pergi ke **Dashboard** > **New Item**.
-2. Masukkan nama (misal: `Library-CI-CD`) dan pilih **Pipeline**.
-3. Scroll ke bawah ke bagian **Pipeline Definition**:
-   - Definition: `Pipeline script from SCM`.
-   - SCM: `Git`.
-   - Repository URL: Masukkan URL GitHub repository ini.
-   - Branch Specifier: `*/main`.
-   - Script Path: `Jenkinsfile` (biarkan default).
-4. Klik **Save**.
-5. Klik **Build Now** untuk menjalankan pipeline pertama kali.
-
-4. Klik **Build Now** untuk menjalankan pipeline pertama kali.
+*   **Backend Framework**: Java Spring Boot 3.x
+*   **Database**: H2 (In-Memory) / PostgreSQL (Production ready)
+*   **Messaging**: RabbitMQ (Event-driven communication)
+*   **Service Discovery**: Netflix Eureka
+*   **API Gateway**: Spring Cloud Gateway
+*   **Containerization**: Docker & Docker Compose
+*   **CI/CD**: Jenkins
+*   **Logging**: ELK Stack (Elasticsearch, Logstash, Kibana)
+*   **Monitoring**: Prometheus & Grafana
 
 ---
 
-### 3. Monitoring (Prometheus & Grafana)
-Digunakan untuk memantau performa aplikasi (CPU, RAM, Request Rate) secara real-time.
+## 📖 Konsep Dasar: Monolithic vs Microservices
 
-**Cara Menjalankan:**
-```bash
-docker-compose -f docker-compose-monitoring.yml up -d
-```
-*Note: Pipeline Jenkins juga sudah otomatis menjalankan ini.*
+Sebelum masuk ke teknis, penting untuk memahami mengapa kita menggunakan arsitektur ini.
 
-**Akses Layanan:**
-- **Grafana (Dashboard):** [http://localhost:3000](http://localhost:3000)
-  - Login default: `admin` / `admin`
-  - Dashboard: **Spring Boot Microservices** (Pre-configured)
-- **Prometheus (Metrics Explorer):** [http://localhost:9090](http://localhost:9090)
+### 🏛️ Monolithic Architecture
+Model tradisional di mana seluruh aplikasi (Frontend, Backend, Database logic) digabung menjadi satu kesatuan besar (single codebase/deployable unit).
+
+| Kelebihan | Kekurangan |
+| :--- | :--- |
+| **Simpel**: Mudah didevelop di awal (satu project IDE). | **Sulit di-scale**: Harus duplikasi seluruh server meski cuma satu fitur yang ramai. |
+| **Mudah Debugging**: Log ada di satu file, trace error gampang. | **Teknologi Terkunci**: Susah ganti bahasa pemrograman/framework separuh jalan. |
+| **Performance**: Tidak ada latency jaringan antar modul. | **Risiko Tinggi**: Satu bug memory leak bisa mematikan *seluruh* aplikasi. |
+
+### 🧩 Microservices Architecture
+Model modern (yang dipakai proyek ini) di mana aplikasi dipecah menjadi layanan-layanan kecil independen yang saling berkomunikasi.
+
+| Kelebihan | Kekurangan |
+| :--- | :--- |
+| **Scalability**: Bisa scale service yang ramai saja (misal: `peminjaman-service` saja). | **Kompleks**: Butuh infrastruktur canggih (Docker, K8s, API Gateway). |
+| **Agility**: Tim A bisa pakai Java, Tim B pakai Node.js. | **Debugging Sulit**: Error bisa terjadi di komunikasi antar service. |
+| **Fault Tolerance**: Satu service mati, service lain tetap jalan. | **Data Consistency**: Menjaga konsistensi data antar database itu menantang (Distributed Transaction). |
 
 ---
 
-## 🛠️ Microservices
+## 🛠️ Manfaat Infrastruktur DevOps
 
-Daftar layanan yang tersedia dalam repositori ini:
-- **Eureka Server**: Service Discovery (Port 8761)
-- **API Gateway**: Gerbang utama akses API (Port 9000)
-- **Anggota Service**: Manajemen data anggota (Port 8081)
-- **Buku Service**: Manajemen data buku (Port 8082)
-- **Peminjaman Service**: Logika peminjaman buku (Port 8083)
-- **Pengembalian Service**: Logika pengembalian buku (Port 8084)
-- **Email Service**: Layanan notifikasi email (Port 8085)
+Proyek ini bukan hanya soal koding, tapi juga "ops" (operasional):
+
+### 1. Centralized Logging (ELK Stack)
+*   **Masalah**: Di microservices, ada 10 service = 10 file log. Kalau ada error, capek buka satu-satu.
+*   **Solusi**: Semua log dikirim ke **Logstash** -> disimpan di **Elasticsearch** -> dilihat di **Kibana**.
+*   **Manfaat**: Debugging super cepat. Cukup cari "ErrorID: 123", langsung ketemu log dari semua service terkait.
+
+### 2. Monitoring (Prometheus & Grafana)
+*   **Masalah**: Kita tidak tahu apakah server sehat, lemot, atau mau crash kehabisan RAM.
+*   **Solusi**: **Prometheus** mengambil data kesehatan (metrics) tiap 15 detik. **Grafana** memvisualisasikannya jadi grafik keren.
+*   **Manfaat**: Deteksi dini masalah ("Wah RAM tinggal 10%!") dan planning kapasitas server.
+
+### 3. CI/CD (Jenkins)
+*   **Masalah**: Deploy manual itu capek, lama, dan rawan salah ketik command (Human Error).
+*   **Solusi**: **Continuous Integration** (Otomatis test & build saat save code) & **Continuous Deployment** (Otomatis deploy ke server).
+*   **Manfaat**: Rilis fitur lebih cepat, developer fokus koding bukan deploy.
+
+---
+
+## 🚀 Panduan Langkah Kerja (Step-by-Step)
+
+### Prasyarat
+*   Docker & Docker Compose (Wajib)
+*   Java JDK 21
+*   Maven 3.9
+
+### Langkah 1: Menjalankan Infrastruktur Pendukung
+Sebelum aplikasi jalan, infrastruktur harus siap dulu.
+
+1.  **Jalankan ELK Stack** (Untuk Log):
+    ```bash
+    docker-compose -f docker-compose-elk.yml up -d
+    ```
+    *Tunggu 1-2 menit sampai Elasticsearch siap.*
+
+2.  **Jalankan Jenkins** (Untuk CI/CD):
+    ```bash
+    docker-compose -f docker-compose-jenkins.yml up -d
+    ```
+
+3.  **Jalankan Monitoring** (Prometheus & Grafana):
+    ```bash
+    docker-compose -f docker-compose-monitoring.yml up -d
+    ```
+
+### Langkah 2: Menjalankan Aplikasi (Microservices)
+Ada dua cara: Manual via Docker Compose atau Otomatis via Jenkins.
+
+**Cara A: Manual (Local Development)**
+```bash
+docker-compose -f docker-compose-app.yml up -d --build
+```
+Ini akan menjalankan:
+*   RabbitMQ
+*   Eureka Server
+*   API Gateway
+*   Semua Service (Anggota, Buku, Peminjaman, dll)
+
+**Cara B: Via Jenkins Pipeline (CI/CD)**
+1.  Buka Jenkins di `http://localhost:8080`.
+2.  Buat Pipeline Job baru, arahkan ke repo Git ini.
+3.  Klik **Build Now**. Jenkins akan otomatis:
+    *   Checkout code.
+    *   Build JAR file (Maven).
+    *   Build Docker Image.
+    *   Deploy aplikasi (docker-compose up).
+    *   Run Test.
+
+---
+
+## 🌐 Akses Layanan
+
+Simpan daftar port ini:
+
+| Service | URL / Port | Keterangan |
+| :--- | :--- | :--- |
+| **Web Aplikasi Utama** | `http://localhost:9000` | Masuk lewat API Gateway |
+| **Jenkins** | `http://localhost:8080` | CI/CD Server |
+| **Kibana** | `http://localhost:5601` | Cek Log Aplikasi |
+| **Grafana** | `http://localhost:3000` | Monitoring Dashboard (User/Pass: admin/admin) |
+| **Prometheus** | `http://localhost:9090` | Query Metrics Mentah |
+| **Eureka Dashboard** | `http://localhost:8761` | Cek Status Service |
