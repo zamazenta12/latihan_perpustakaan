@@ -75,6 +75,25 @@ Agar pipeline bisa berjalan, konfigurasi Maven dan JDK secara manual:
 4. Klik **Save**.
 5. Klik **Build Now** untuk menjalankan pipeline pertama kali.
 
+4. Klik **Build Now** untuk menjalankan pipeline pertama kali.
+
+---
+
+### 3. Monitoring (Prometheus & Grafana)
+Digunakan untuk memantau performa aplikasi (CPU, RAM, Request Rate) secara real-time.
+
+**Cara Menjalankan:**
+```bash
+docker-compose -f docker-compose-monitoring.yml up -d
+```
+*Note: Pipeline Jenkins juga sudah otomatis menjalankan ini.*
+
+**Akses Layanan:**
+- **Grafana (Dashboard):** [http://localhost:3000](http://localhost:3000)
+  - Login default: `admin` / `admin`
+  - Dashboard: **Spring Boot Microservices** (Pre-configured)
+- **Prometheus (Metrics Explorer):** [http://localhost:9090](http://localhost:9090)
+
 ---
 
 ## 🛠️ Microservices

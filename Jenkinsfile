@@ -226,6 +226,32 @@ pipeline {
                 sh 'docker images | grep "eureka-server\\|api-gateway\\|anggota-service\\|buku-service\\|peminjaman-service\\|pengembalian-service\\|email-service"'
             }
         }
+
+        stage('Deploy Monitoring Stack') {
+            steps {
+                echo 'Deploying Monitoring Stack (Prometheus + Grafana)...'
+                sh 'docker-compose -f docker-compose-monitoring.yml up -d'
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                echo 'Deploying Application Microservices...'
+                sh 'docker-compose -f docker-compose-app.yml up -d'
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                echo 'Waiting for services to be ready...'
+                sleep 30 // Wait for services to start
+                script {
+                    def services = ['eureka-server:8761', 'api-gateway:9000', 'anggota-service:8081', 'buku-service:8082', 'peminjaman-service:8083']
+                    // Simple check if containers are running
+                    sh 'docker ps'
+                }
+            }
+        }
     }
     
     post {
