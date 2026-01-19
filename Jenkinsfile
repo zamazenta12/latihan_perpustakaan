@@ -123,14 +123,16 @@ pipeline {
         stage('Deploy Monitoring Stack') {
             steps {
                 echo 'Deploying Monitoring Stack (Prometheus + Grafana)...'
-                sh 'docker-compose -f docker-compose-monitoring.yml up -d'
+                // Ensure network exists first because it is external in docker-compose.yml
+                sh 'docker network create latihan_perpustakaan_elk || true'
+                sh 'docker compose -f docker-compose-monitoring.yml up -d'
             }
         }
 
         stage('Deploy Application') {
             steps {
                 echo 'Deploying Application Microservices...'
-                sh 'docker-compose -f docker-compose-app.yml up -d'
+                sh 'docker compose -f docker-compose-app.yml up -d'
             }
         }
 
