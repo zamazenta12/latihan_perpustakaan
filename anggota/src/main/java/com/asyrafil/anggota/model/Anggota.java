@@ -15,5 +15,6 @@ public class Anggota {
     private long nim;
     private String nama;
     private String alamat;
+    private String email;
     private String jenis_kelamin;
 }
