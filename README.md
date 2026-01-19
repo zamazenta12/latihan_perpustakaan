@@ -61,6 +61,16 @@ Proyek ini bukan hanya soal koding, tapi juga "ops" (operasional):
 *   **Solusi**: **Continuous Integration** (Otomatis test & build saat save code) & **Continuous Deployment** (Otomatis deploy ke server).
 *   **Manfaat**: Rilis fitur lebih cepat, developer fokus koding bukan deploy.
 
+### 4. API Gateway (Spring Cloud Gateway)
+Selain ELK, ini adalah komponen vital lainnya.
+*   **Apa itu**: "Resepsionis" atau pintu gerbang utama untuk seluruh request yang masuk ke sistem.
+*   **Fungsi**:
+    1.  **Routing**: Mengarahkan request user. User minta `/api/buku`, gateway meneruskan ke `buku-service` di port 8082. User minta `/api/anggota`, diteruskan ke `anggota-service` di port 8081. User tidak perlu hafal port masing-masing service.
+    2.  **Security**: Memeriksa token (JWT) di satu pintu depan. Kalau tidak valid, ditolak sebelum masuk ke service dalam.
+    3.  **Load Balancing**: Membagi beban trafik secara otomatis.
+*   **Cara Kerja**:
+    `User` --> `API Gateway (Port 9000)` --> `Eureka` (Tanya: Service X ada dimana?) --> `Microservice X`
+
 ---
 
 ## 🚀 Panduan Langkah Kerja (Step-by-Step)
