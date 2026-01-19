@@ -29,9 +29,9 @@ if ($Action -eq "reset-volume" -or $Action -eq "both") {
     Write-Host "  Starting monitoring stack..." -ForegroundColor Yellow
     docker compose -f docker-compose-monitoring.yml up -d
     
-    Write-Host "  ✓ Grafana volume reset complete" -ForegroundColor Green
-    Write-Host "  → Grafana will start with fresh data" -ForegroundColor Green
-    Write-Host "  → Login: admin / admin" -ForegroundColor Green
+    Write-Host "  [OK] Grafana volume reset complete" -ForegroundColor Green
+    Write-Host "  --> Grafana will start with fresh data" -ForegroundColor Green
+    Write-Host "  --> Login: admin / admin" -ForegroundColor Green
     Write-Host ""
 }
 
@@ -46,8 +46,8 @@ if ($Action -eq "reset-password" -or $Action -eq "both") {
     Write-Host "  Resetting password to 'admin'..." -ForegroundColor Yellow
     docker exec -it grafana grafana-cli admin reset-admin-password admin
     
-    Write-Host "  ✓ Password reset complete" -ForegroundColor Green
-    Write-Host "  → Login: admin / admin" -ForegroundColor Green
+    Write-Host "  [OK] Password reset complete" -ForegroundColor Green
+    Write-Host "  --> Login: admin / admin" -ForegroundColor Green
     Write-Host ""
 }
 
