@@ -2,10 +2,9 @@ version: '3.7'
 
 services:
   prometheus:
-    image: prom/prometheus:v2.45.0
+    build: ./prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus_data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -20,12 +19,10 @@ services:
     restart: unless-stopped
 
   grafana:
-    image: grafana/grafana:10.0.0
+    build: ./grafana
     container_name: grafana
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin

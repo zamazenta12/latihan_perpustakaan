@@ -125,7 +125,7 @@ pipeline {
                 echo 'Deploying Monitoring Stack (Prometheus + Grafana)...'
                 sh 'docker network create latihan_perpustakaan_elk || true'
                 sh 'docker rm -f prometheus grafana || true'
-                sh 'docker compose -p library_monitor -f docker-compose-monitoring.yml up -d'
+                sh 'docker compose -p library_monitor -f docker-compose-monitoring.yml up -d --build'
             }
         }
 
