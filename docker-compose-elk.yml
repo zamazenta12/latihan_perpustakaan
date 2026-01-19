@@ -53,7 +53,7 @@ services:
 networks:
   elk:
     name: latihan_perpustakaan_elk
-    driver: bridge
+    external: true
 
 volumes:
   es_data:
