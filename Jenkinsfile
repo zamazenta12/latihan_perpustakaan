@@ -19,73 +19,6 @@ pipeline {
             }
         }
         
-        stage('Build All Services') {
-            parallel {
-                stage('Build Eureka Server') {
-                    steps {
-                        dir('eureka_server') {
-                            echo 'Building Eureka Server...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-                
-                stage('Build API Gateway') {
-                    steps {
-                        dir('api_gateway') {
-                            echo 'Building API Gateway...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-                
-                stage('Build Anggota Service') {
-                    steps {
-                        dir('anggota') {
-                            echo 'Building Anggota Service...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-                
-                stage('Build Buku Service') {
-                    steps {
-                        dir('buku') {
-                            echo 'Building Buku Service...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-                
-                stage('Build Peminjaman Service') {
-                    steps {
-                        dir('peminjaman') {
-                            echo 'Building Peminjaman Service...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-                
-                stage('Build Pengembalian Service') {
-                    steps {
-                        dir('pengembalian') {
-                            echo 'Building Pengembalian Service...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-                
-                stage('Build Email Service') {
-                    steps {
-                        dir('email') {
-                            echo 'Building Email Service...'
-                            sh 'mvn clean package -DskipTests'
-                        }
-                    }
-                }
-            }
-        }
-        
         stage('Test All Services') {
             parallel {
                 stage('Test Eureka Server') {
@@ -154,67 +87,66 @@ pipeline {
         }
         
         stage('Build Docker Images') {
-            parallel {
-                stage('Docker Build Eureka Server') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for Eureka Server...'
-                            sh 'docker build -t eureka-server:latest ./eureka_server'
-                        }
+            // Running sequentially to avoid resource exhaustion
+            stage('Docker Build Eureka Server') {
+                steps {
+                    script {
+                        echo 'Building Docker image for Eureka Server...'
+                        sh 'docker build -t eureka-server:latest ./eureka_server'
                     }
                 }
-                
-                stage('Docker Build API Gateway') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for API Gateway...'
-                            sh 'docker build -t api-gateway:latest ./api_gateway'
-                        }
+            }
+            
+            stage('Docker Build API Gateway') {
+                steps {
+                    script {
+                        echo 'Building Docker image for API Gateway...'
+                        sh 'docker build -t api-gateway:latest ./api_gateway'
                     }
                 }
-                
-                stage('Docker Build Anggota') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for Anggota Service...'
-                            sh 'docker build -t anggota-service:latest ./anggota'
-                        }
+            }
+            
+            stage('Docker Build Anggota') {
+                steps {
+                    script {
+                        echo 'Building Docker image for Anggota Service...'
+                        sh 'docker build -t anggota-service:latest ./anggota'
                     }
                 }
-                
-                stage('Docker Build Buku') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for Buku Service...'
-                            sh 'docker build -t buku-service:latest ./buku'
-                        }
+            }
+            
+            stage('Docker Build Buku') {
+                steps {
+                    script {
+                        echo 'Building Docker image for Buku Service...'
+                        sh 'docker build -t buku-service:latest ./buku'
                     }
                 }
-                
-                stage('Docker Build Peminjaman') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for Peminjaman Service...'
-                            sh 'docker build -t peminjaman-service:latest ./peminjaman'
-                        }
+            }
+            
+            stage('Docker Build Peminjaman') {
+                steps {
+                    script {
+                        echo 'Building Docker image for Peminjaman Service...'
+                        sh 'docker build -t peminjaman-service:latest ./peminjaman'
                     }
                 }
-                
-                stage('Docker Build Pengembalian') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for Pengembalian Service...'
-                            sh 'docker build -t pengembalian-service:latest ./pengembalian'
-                        }
+            }
+            
+            stage('Docker Build Pengembalian') {
+                steps {
+                    script {
+                        echo 'Building Docker image for Pengembalian Service...'
+                        sh 'docker build -t pengembalian-service:latest ./pengembalian'
                     }
                 }
-                
-                stage('Docker Build Email') {
-                    steps {
-                        script {
-                            echo 'Building Docker image for Email Service...'
-                            sh 'docker build -t email-service:latest ./email'
-                        }
+            }
+            
+            stage('Docker Build Email') {
+                steps {
+                    script {
+                        echo 'Building Docker image for Email Service...'
+                        sh 'docker build -t email-service:latest ./email'
                     }
                 }
             }
