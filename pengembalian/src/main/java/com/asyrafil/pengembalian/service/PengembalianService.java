@@ -72,7 +72,7 @@ public class PengembalianService {
                 .and(append("pengembalian_id", savedPengembalian.getId()))
                 .and(append("peminjaman_id", savedPengembalian.getPeminjaman_id()))
                 .and(append("denda", savedPengembalian.getDenda())),
-                "Successfully created pengembalian with ID: {}", savedPengembalian.getId());
+                "Berhasil menambahkan pengembalian dengan ID: {}", savedPengembalian.getId());
 
         return savedPengembalian;
     }
