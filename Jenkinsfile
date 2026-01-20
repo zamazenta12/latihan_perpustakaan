@@ -6,6 +6,10 @@ pipeline {
         COMPOSE_DOCKER_CLI_BUILD = '1'
     }
 
+    triggers {
+        pollSCM('* * * * *')
+    }
+
     tools {
         maven 'Maven 3.9'
         jdk 'JDK 21'
