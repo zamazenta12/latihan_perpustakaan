@@ -73,7 +73,7 @@ public class BukuService {
 
         logger.info(append("event", "buku_deleted")
                 .and(append("buku_id", id)),
-                "Successfully deleted buku with ID: {}", id);
+                "Berhasil hapus buku dengan ID: {}", id);
     }
 
 }
