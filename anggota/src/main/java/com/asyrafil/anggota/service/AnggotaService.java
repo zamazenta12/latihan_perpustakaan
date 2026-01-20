@@ -58,7 +58,7 @@ public class AnggotaService {
                 .and(append("anggota_id", savedAnggota.getId()))
                 .and(append("nama", savedAnggota.getNama()))
                 .and(append("email", savedAnggota.getEmail())),
-                "Successfully created anggota with ID: {}", savedAnggota.getId());
+                "Anggota berhasil ditambahkan dengan ID: {}", savedAnggota.getId());
 
         return savedAnggota;
     }
