@@ -59,7 +59,7 @@ public class BukuService {
                 .and(append("buku_id", savedBuku.getId()))
                 .and(append("judul", savedBuku.getJudul()))
                 .and(append("pengarang", savedBuku.getPengarang())),
-                "Successfully created buku with ID: {}", savedBuku.getId());
+                "Berhasil menambahkan buku dengan ID: {}", savedBuku.getId());
 
         return savedBuku;
     }
